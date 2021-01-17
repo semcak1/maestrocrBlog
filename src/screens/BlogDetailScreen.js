@@ -2,15 +2,15 @@ import React from "react";
 import { Text, StyleSheet } from "react-native";
 import BlogCard from '../components/BlogCard'
 
-const BlogListScreen = () => {
+const BlogDetailScreen = () => {
   return (
     <>
     <Text>sad</Text>
-      <BlogCard/>
+      
     </>
   );
 };
 
 const styles = StyleSheet.create({});
 
-export default BlogListScreen;
+export default BlogDetailScreen;
