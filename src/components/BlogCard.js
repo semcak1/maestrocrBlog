@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import {
   Text,
   StyleSheet,
@@ -11,15 +11,19 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
+import { Context } from "../context/BlogContext";
 
-const BlogCard = () => {
+const BlogCard = ({ navigation }) => {
+  const { state, getBlogPosts } = useContext(Context);
   const [data, setdata] = useState([]);
   const [refreshing, setrefreshing] = useState(false);
   const [page, setpage] = useState(1);
   const [loading, setloading] = useState(false);
-  const [newDataLength, setnewDataLength] = useState(1);
+
   console.log("BLOG CARD RENDER OLDU");
-  console.log("DATA LENGTH", newDataLength);
+    // console.log(state.blogList.map(b=>b.postId))
+ 
+
   const loadingIndicator = () => {
     return loading ? (
       <View style={styles.indicatorView}>
@@ -29,53 +33,69 @@ const BlogCard = () => {
   };
 
   const infiniteScroll = () => {
-    setpage((prev) => prev + 1);
-    if (newDataLength !== 0) {
-      fetchBlogPost();
-    }
+    console.log("INF.ı.nITE SCROLL RENDER OLDU")
+    console.log("PAGE NUMBER", page);
+    setpage((prev) => {
+      if (state.isThereNewData) {
+        prev = prev + 1;
+      }
+      console.log
+      getBlogPosts(prev);
+
+      return prev;
+    });
   };
 
-  const fetchBlogPost = useCallback(() => {
-    const count = 3;
+  //   const fetchBlogPost = useCallback(() => {
+  //     const count = 3;
 
-    setloading(true);
-    fetch(
-      `https://www.lenasoftware.com/api/v1/en/maestro/1?page=${page}&count=${count}`
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        setnewDataLength(json.result.length);
-        if (newDataLength !== 0) {
-          setdata((prev) =>
-            page === 1 ? json.result : prev.concat(json.result)
-          );
-          setloading(false);
-        }
-      })
-      .catch((err) => alert("Errror", err.message));
-  }, [page]);
+  //     setloading(true);
+  //     fetch(
+  //       `https://www.lenasoftware.com/api/v1/en/maestro/1?page=${page}&count=${count}`
+  //     )
+  //       .then((res) => res.json())
+  //       .then((json) => {
+  //         setnewDataLength(json.result.length);
+  //         if (newDataLength !== 0) {
+  //           setdata((prev) =>
+  //             page === 1 ? json.result : prev.concat(json.result)
+  //           );
+  //           setloading(false);
+  //         }
+  //       })
+  //       .catch((err) => alert("Errror", err.message));
+  //   }, [page]);
 
   const onRefresh = useCallback(() => {
     setrefreshing(true);
-
-    if (newDataLength !== 0) {
-      fetchBlogPost();
-    }
+    console.log("ON REFRESH RENDER OLDU")
+    getBlogPosts(page);
+   
 
     setrefreshing(false);
   }, [refreshing]);
 
-  const onClickPost=()=>{
-      console.log('clck')
-  }
+  const onClickPost = (item) => {
+    console.log("clck");
+    navigation.navigate("BlogDetail", {
+      postId: item.postId
+    });
+  };
 
   useEffect(() => {
-    fetchBlogPost();
+   
+   
+   
+    getBlogPosts(page);
   }, []);
 
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={onClickPost}>
+      <TouchableOpacity
+        onPress={() => {
+          onClickPost(item);
+        }}
+      >
         <ScrollView>
           <View style={styles.cardView}>
             <Text style={styles.titleView}>
@@ -98,12 +118,14 @@ const BlogCard = () => {
   return (
     <>
       <FlatList
-        data={data}
+        data={state.blogList}
         keyExtractor={(item) => String(item.postId)}
         renderItem={renderItem}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
         onEndReached={infiniteScroll}
         ListFooterComponent={loadingIndicator}
         onEndReachedThreshold={0.1}

@@ -1,16 +1,32 @@
-import React from "react";
-import { Text, StyleSheet } from "react-native";
-import BlogCard from '../components/BlogCard'
+import React, { useContext, useState } from "react";
+import { Text, StyleSheet, ScrollView } from "react-native";
+import BlogCard from "../components/BlogCard";
+import { Context } from "../context/BlogContext";
 
-const BlogDetailScreen = () => {
+const BlogDetailScreen = ({ route }) => {
+  const { state } = useContext(Context);
+  const blogDetails = route.params;
+
+  const postId = blogDetails.postId;
+  const blog = state.blogList.find((blog) => blog.postId === postId);
+
+  console.log(postId);
   return (
-    <>
-    <Text>sad</Text>
-      
-    </>
+    <ScrollView>
+      <Text style={styles.titleView}>{blog.title}</Text>
+      <Text style={styles.contextView}>{blog.content}</Text>
+    </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  titleView: {
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  contextView:{
+      fontSize:18
+  }
+});
 
 export default BlogDetailScreen;

@@ -2,11 +2,11 @@ import React from "react";
 import { Text, StyleSheet } from "react-native";
 import BlogCard from '../components/BlogCard'
 
-const BlogListScreen = () => {
+const BlogListScreen = ({navigation}) => {
   return (
     <>
-    <Text>sad</Text>
-      <BlogCard/>
+ 
+      <BlogCard navigation={navigation}/>
     </>
   );
 };
