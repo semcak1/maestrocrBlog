@@ -18,7 +18,7 @@ const BlogCard = ({ navigation }) => {
   const [page, setpage] = useState(1);
   const [loading, setloading] = useState(true);
 
-  console.log("BLOG CARD RENDER OLDU");
+ 
 
   const loadingIndicator = () => {
     return loading ? (
@@ -32,7 +32,7 @@ const BlogCard = ({ navigation }) => {
     setloading(true);
     setpage((prev) => {
       if (state.isThereNewData) {
-        console.log("NE DATA ?", state.isThereNewData);
+        
         prev = prev + 1;
         getBlogPosts(prev);
 
