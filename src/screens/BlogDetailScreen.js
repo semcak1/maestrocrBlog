@@ -6,11 +6,10 @@ import { Context } from "../context/BlogContext";
 const BlogDetailScreen = ({ route }) => {
   const { state } = useContext(Context);
   const blogDetails = route.params;
-
   const postId = blogDetails.postId;
   const blog = state.blogList.find((blog) => blog.postId === postId);
 
-  console.log(postId);
+
   return (
     <ScrollView>
       <Text style={styles.titleView}>{blog.title}</Text>
@@ -24,9 +23,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
-  contextView:{
-      fontSize:18
-  }
+  contextView: {
+    fontSize: 18,
+  },
 });
 
 export default BlogDetailScreen;
