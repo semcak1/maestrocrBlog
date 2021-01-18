@@ -10,14 +10,31 @@ const RootNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="BlogList">
-        <Stack.Screen name="BlogList" component={BlogListScreen}  options={{ title: 'Blog List' }}/>
-        <Stack.Screen name="BlogDetail" component={BlogDetailScreen}  options={{ title: 'Blog Detail' }}/>
+        <Stack.Screen
+          name="BlogList"
+          component={BlogListScreen}
+          options={{
+            headerTintColor: "#fff",
+            title: "Blog List",
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="BlogDetail"
+          component={BlogDetailScreen}
+          options={{
+            title: "Blog Detail",
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
-
-
 
 export default RootNavigator;

@@ -20,8 +20,9 @@ const blogReducer = (state = initialState, action) => {
       });
       return {
         ...state,
-        // blogList: state.blogList.concat(action.payload.data),
+
         blogList: [...state.blogList],
+        isThereNewData: action.payload.isThereNewData,
         isLoading: false,
       };
     default:

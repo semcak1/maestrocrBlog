@@ -6,8 +6,6 @@ import {
   View,
   FlatList,
   ScrollView,
-  RefreshControl,
-  SafeAreaView,
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
@@ -15,14 +13,12 @@ import { Context } from "../context/BlogContext";
 
 const BlogCard = ({ navigation }) => {
   const { state, getBlogPosts } = useContext(Context);
-  const [data, setdata] = useState([]);
+
   const [refreshing, setrefreshing] = useState(false);
   const [page, setpage] = useState(1);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
 
   console.log("BLOG CARD RENDER OLDU");
-    // console.log(state.blogList.map(b=>b.postId))
- 
 
   const loadingIndicator = () => {
     return loading ? (
@@ -32,60 +28,35 @@ const BlogCard = ({ navigation }) => {
     ) : null;
   };
 
-  const infiniteScroll = () => {
-    console.log("INF.ı.nITE SCROLL RENDER OLDU")
-    console.log("PAGE NUMBER", page);
+  const infiniteScroll = useCallback(() => {
+    setloading(true);
     setpage((prev) => {
       if (state.isThereNewData) {
+        console.log("NE DATA ?", state.isThereNewData);
         prev = prev + 1;
+        getBlogPosts(prev);
+
+        return prev;
       }
-      console.log
-      getBlogPosts(prev);
-
-      return prev;
     });
-  };
-
-  //   const fetchBlogPost = useCallback(() => {
-  //     const count = 3;
-
-  //     setloading(true);
-  //     fetch(
-  //       `https://www.lenasoftware.com/api/v1/en/maestro/1?page=${page}&count=${count}`
-  //     )
-  //       .then((res) => res.json())
-  //       .then((json) => {
-  //         setnewDataLength(json.result.length);
-  //         if (newDataLength !== 0) {
-  //           setdata((prev) =>
-  //             page === 1 ? json.result : prev.concat(json.result)
-  //           );
-  //           setloading(false);
-  //         }
-  //       })
-  //       .catch((err) => alert("Errror", err.message));
-  //   }, [page]);
+    setloading(false);
+  }, [page]);
 
   const onRefresh = useCallback(() => {
     setrefreshing(true);
-    console.log("ON REFRESH RENDER OLDU")
+
     getBlogPosts(page);
-   
 
     setrefreshing(false);
   }, [refreshing]);
 
   const onClickPost = (item) => {
-    console.log("clck");
     navigation.navigate("BlogDetail", {
-      postId: item.postId
+      postId: item.postId,
     });
   };
 
   useEffect(() => {
-   
-   
-   
     getBlogPosts(page);
   }, []);
 
@@ -98,9 +69,7 @@ const BlogCard = ({ navigation }) => {
       >
         <ScrollView>
           <View style={styles.cardView}>
-            <Text style={styles.titleView}>
-              id : {item.postId} {item.title}
-            </Text>
+            <Text style={styles.titleView}>{item.title}</Text>
             <Text style={styles.subTitleView}>
               Total Reading Time : {item.totalReadingTime} minuts
             </Text>
@@ -123,9 +92,6 @@ const BlogCard = ({ navigation }) => {
         renderItem={renderItem}
         onRefresh={onRefresh}
         refreshing={refreshing}
-        // refreshControl={
-        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        // }
         onEndReached={infiniteScroll}
         ListFooterComponent={loadingIndicator}
         onEndReachedThreshold={0.1}
@@ -139,12 +105,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     marginBottom: 25,
-    // shadowColor:'black',
-    // shadowRadius:15,
-    // shadowOffset:{bottom:20},
-    // elevation:1,
-
+    borderColor: "rgba(22,32,32,0.3)",
     paddingVertical: 15,
+    backgroundColor: "#fff",
   },
   summaryView: {
     paddingLeft: 15,
